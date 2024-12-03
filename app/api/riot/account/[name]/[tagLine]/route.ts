@@ -1,13 +1,27 @@
-import { NextResponse } from 'next/server'
-import { ritoApi } from '@/lib/riot'
+import { NextRequest, NextResponse } from 'next/server'
+import { RiotApi } from 'twisted'
 import { RegionGroups } from 'twisted/dist/constants'
 
+const riotApi = new RiotApi({
+  key: process.env.NEXT_PUBLIC_RIOT_API_KEY as string
+})
+
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { name: string; tagLine: string } }
 ) {
+  if (!params.name || !params.tagLine) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Nome do invocador e tag são obrigatórios'
+      },
+      { status: 400 }
+    )
+  }
+
   try {
-    const { response: account } = await ritoApi.Account.getByRiotId(
+    const { response: account } = await riotApi.Account.getByRiotId(
       params.name, 
       params.tagLine, 
       RegionGroups.AMERICAS
@@ -15,9 +29,10 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      ...account
+      data: account
     })
   } catch (error) {
+    console.error('[RiotAPI] Error:', error)
     return NextResponse.json(
       {
         success: false,

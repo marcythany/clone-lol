@@ -1,30 +1,36 @@
-import { NextResponse } from 'next/server'
-import { api } from '@/lib/riot'
-import { RegionGroups } from 'twisted/dist/constants'
-import { getDefaultRegion } from '@/types/regions'
+import { NextRequest, NextResponse } from 'next/server'
+import { lolApi } from '@/lib/riot'
+import { Regions } from 'twisted/dist/constants'
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { puuid: string } }
 ) {
-  const { searchParams } = new URL(request.url)
-  const region = (searchParams.get('region') || RegionGroups.AMERICAS) as RegionGroups
-
   try {
-    const summonerRegion = getDefaultRegion(region)
-    const { response: summoner } = await api.Summoner.getByPUUID(params.puuid, summonerRegion)
+    const searchParams = request.nextUrl.searchParams
+    const region = searchParams.get('region')
+
+    if (!region) {
+      throw new Error('Region is required')
+    }
+
+    const { response: summoner } = await lolApi.Summoner.getByPUUID(
+      params.puuid,
+      region as Regions
+    )
 
     return NextResponse.json({
       success: true,
       ...summoner
     })
   } catch (error) {
+    console.error('Error fetching summoner:', error)
     return NextResponse.json(
       {
         success: false,
-        message: error instanceof Error ? error.message : 'Erro ao buscar invocador'
+        message: error instanceof Error ? error.message : 'Error fetching summoner'
       },
-      { status: 400 }
+      { status: 404 }
     )
   }
 }

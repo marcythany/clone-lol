@@ -3,17 +3,13 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
-import { ChevronDown, LogOut, User2 } from 'lucide-react'
+import { Bell, ChevronDown, LogOut, Settings, User2 } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
 import { useDataDragon } from '@/hooks/useDataDragon'
 import Image from 'next/image'
-import { Profile } from '@/types/user'
-
-const navigationItems = [
-  { name: 'Overview', href: '/' },
-  { name: 'Champions', href: '/champions' },
-  { name: 'Matches', href: '/matches' },
-]
+import { Profile } from '@/types/profile'
+import { useTranslations } from 'next-intl'
+import {cn} from '@/lib/utils'
 
 interface HeaderProps {
   user: User | null
@@ -25,6 +21,7 @@ export function Header({ user, onSignOut }: HeaderProps) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const supabase = createClient()
   const { getProfileIconUrl } = useDataDragon()
+  const t = useTranslations('Header')
 
   useEffect(() => {
     async function fetchProfile() {
@@ -42,94 +39,100 @@ export function Header({ user, onSignOut }: HeaderProps) {
     }
 
     fetchProfile()
-  }, [user?.id])
+  }, [user?.id, supabase])
 
   const profileIconUrl = profile?.profile_icon_id ? getProfileIconUrl(profile.profile_icon_id) : null
 
+  const navigationItems = [
+    { name: t('overview'), href: '/' },
+    { name: t('champions'), href: '/champions' },
+    { name: t('matches'), href: '/matches' },
+  ]
+
   return (
-    <header className="fixed top-0 left-20 right-0 h-16 bg-slate-900/95 flex items-center justify-between px-6 z-50">
-      {/* Navigation */}
-      <nav className="flex items-center space-x-6">
-        {navigationItems.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className="text-slate-400 hover:text-white transition-colors"
-          >
-            {item.name}
-          </Link>
-        ))}
-      </nav>
+    <header className={cn(
+      "fixed top-0 right-0 left-0 z-50 h-16",
+      "bg-[#0A1428]/70 backdrop-blur-md",
+      "border-b border-[#C89B3C]/10",
+      "transition-colors duration-200"
+    )}>
+      <div className="container h-full flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Image
+            src="/logo.png"
+            alt="Clone Legends"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
+          <span className="text-lg font-bold bg-gradient-to-r from-[#C89B3C] to-[#785A28] bg-clip-text text-transparent">
+            Clone Legends
+          </span>
+        </div>
 
-      {/* User Menu */}
-      <div className="flex items-center space-x-4">
-        {user ? (
-          <div className="relative">
-            <button
-              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors"
-            >
-              <div className="w-8 h-8 relative rounded-full overflow-hidden bg-slate-800">
+        <div className="flex items-center gap-6">
+          <nav className="flex items-center gap-4">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm text-[#A1A1A1] hover:text-[#C89B3C] transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-[#C89B3C]/10 flex items-center justify-center">
+              <Bell className="w-4 h-4 text-[#C89B3C]" />
+            </div>
+            <div className="w-8 h-8 rounded-full bg-[#C89B3C]/10 flex items-center justify-center">
+              <Settings className="w-4 h-4 text-[#C89B3C]" />
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center space-x-3 text-gray-300 hover:text-white"
+              >
                 {profileIconUrl ? (
-                  <Image
-                    src={profileIconUrl}
-                    alt="Profile Icon"
-                    fill
-                    sizes="(max-width: 32px) 100vw"
-                    className="object-cover"
-                  />
-                ) : user.user_metadata?.avatar_url ? (
-                  <img
-                    src={user.user_metadata.avatar_url}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
+                  <div className="relative w-8 h-8">
+                    <Image
+                      src={profileIconUrl}
+                      alt="Profile"
+                      fill
+                      sizes="32px"
+                      className="rounded-full object-cover"
+                    />
+                  </div>
                 ) : (
-                  <User2 className="w-full h-full p-1" />
+                  <User2 className="w-8 h-8" />
                 )}
-              </div>
-              <span>{profile?.summoner_name || user.user_metadata?.name || 'User'}</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
+                <ChevronDown className="w-4 h-4" />
+              </button>
 
-            {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-lg py-1">
-                <Link
-                  href="/profile"
-                  className="flex items-center w-full px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-700/50 transition-colors"
-                >
-                  <User2 className="w-4 h-4 mr-2" />
-                  Account Details
-                </Link>
-                <button
-                  onClick={() => {
-                    setIsUserMenuOpen(false)
-                    onSignOut()
-                  }}
-                  className="flex items-center w-full px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-700/50 transition-colors"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </button>
-              </div>
-            )}
+              {isUserMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5">
+                  <div className="py-1">
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-slate-700"
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={onSignOut}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-slate-700 flex items-center space-x-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        ) : (
-          <>
-            <Link
-              href="/login"
-              className="text-slate-400 hover:text-white transition-colors"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/register"
-              className="bg-yellow-500 text-slate-900 px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors"
-            >
-              Sign Up
-            </Link>
-          </>
-        )}
+        </div>
       </div>
     </header>
   )

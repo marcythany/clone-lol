@@ -29,44 +29,39 @@ export function MainLayout({ children }: MainLayoutProps) {
           async (event, session) => {
             console.log('[MainLayout] Auth state change:', event)
             setUser(session?.user ?? null)
-            
-            if (event === 'SIGNED_OUT') {
-              router.push('/login')
-            }
           }
         )
+
+        setIsLoading(false)
 
         return () => {
           subscription.unsubscribe()
         }
       } catch (error) {
-        console.error('[MainLayout] Auth error:', error)
-      } finally {
+        console.error('[MainLayout] Error initializing auth:', error)
         setIsLoading(false)
       }
     }
 
     initializeAuth()
-  }, [supabase, router])
+  }, [])
 
   const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut()
-    } catch (error) {
-      console.error('[MainLayout] Sign out error:', error)
-    }
+    await supabase.auth.signOut()
+    router.push('/login')
   }
 
   if (isLoading) {
-    return <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-      <div className="text-white">Loading...</div>
-    </div>
+    return null // Or a loading spinner
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-[#1E2124]">
       <Sidebar />
-      <Header user={user} onSignOut={handleSignOut} />
+      <Header 
+        user={user} 
+        onSignOut={handleSignOut}
+      />
       <main className="pl-20 pt-16">
         {children}
       </main>

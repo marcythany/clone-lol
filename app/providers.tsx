@@ -1,21 +1,52 @@
-'use client';
+'use client'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from 'next-themes';
-import { Toaster } from '@/components/ui/toaster';
-import AuthLayout from './auth-layout';
+import { ThemeProvider } from 'next-themes'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from '@/components/ui/toaster'
+import { ErrorBoundary } from 'react-error-boundary'
+import type { ProvidersProps } from '@/types/i18n'
 
-const queryClient = new QueryClient();
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000, // 1 minute
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
-export function Providers({ children }: { children: React.ReactNode }) {
+function ErrorFallback({ error, resetErrorBoundary }: any) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="dark">
-        <AuthLayout>
+    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+      <div className="text-center space-y-6">
+        <h1 className="text-4xl font-bold tracking-tight text-white">
+          Algo deu errado
+        </h1>
+        <p className="text-gray-400">
+          {error.message}
+        </p>
+        <button
+          onClick={resetErrorBoundary}
+          className="bg-[#C89B3C] hover:bg-[#A17A2D] text-black px-4 py-2 rounded"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export function Providers({ children }: ProvidersProps) {
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
           <Toaster />
-        </AuthLayout>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
+  )
 }

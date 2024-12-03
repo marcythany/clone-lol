@@ -24,6 +24,8 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
+    --glass: 0 0% 100% / 0.1;
+    --glass-light: 0 0% 100% / 0.05;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -51,6 +53,8 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    --glass: 0 0% 0% / 0.2;
+    --glass-light: 0 0% 0% / 0.1;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -63,7 +67,42 @@
   * {
     @apply border-border;
   }
+  html, body {
+    @apply h-full overflow-hidden;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground flex flex-col;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-glass backdrop-blur-glass border border-white/10 dark:border-black/10;
+  }
+  
+  .glass-card {
+    @apply glass-effect rounded-xl shadow-lg hover:shadow-xl transition-all duration-300;
+  }
+  
+  .bento-grid {
+    @apply grid gap-4 h-full;
+  }
+  
+  .bento-item {
+    @apply glass-card;
+  }
+
+  .bento-item-hover {
+    @apply hover:scale-[1.02] transition-transform duration-300 ease-out;
+  }
+
+  /* Container principal que deve ocupar toda a altura disponível */
+  .main-container {
+    @apply h-[calc(100vh-5rem)] overflow-hidden;
+  }
+
+  /* Container de conteúdo que deve se ajustar ao espaço disponível */
+  .content-container {
+    @apply h-full w-full;
   }
 }

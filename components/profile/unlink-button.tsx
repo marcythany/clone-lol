@@ -1,6 +1,7 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,42 +13,55 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 
 interface UnlinkButtonProps {
   onUnlink: () => Promise<void>
-  isLoading: boolean
 }
 
-export function UnlinkButton({ onUnlink, isLoading }: UnlinkButtonProps) {
+export function UnlinkButton({ onUnlink }: UnlinkButtonProps) {
+  const [isUnlinking, setIsUnlinking] = useState(false)
+  const t = useTranslations('Profile')
+
+  const handleUnlink = async () => {
+    setIsUnlinking(true)
+    try {
+      await onUnlink()
+    } finally {
+      setIsUnlinking(false)
+    }
+  }
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button 
           variant="destructive" 
-          disabled={isLoading}
-          className="w-full bg-[#ED4245] hover:bg-[#ED4245]/90 text-white rounded-md py-2.5"
+          className="w-full bg-[#ED4245] hover:bg-[#ED4245]/90 text-white"
+          disabled={isUnlinking}
         >
-          {isLoading ? "Unlinking..." : "Unlink Riot Account"}
+          {t('unlink')}
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="bg-[#1E2124] border-gray-700">
+      <AlertDialogContent className="bg-[#2B2D31] border-gray-700">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-white">Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle className="text-white">
+            {t('unlinkConfirm')}
+          </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-400">
-            This action will unlink your League of Legends account from your profile.
-            You can always link it again later.
+            {t('unlinkDescription')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="bg-gray-700 hover:bg-gray-600 text-white border-0">
-            Cancel
+          <AlertDialogCancel className="bg-gray-700 text-white hover:bg-gray-600">
+            {t('cancel')}
           </AlertDialogCancel>
           <AlertDialogAction
-            onClick={onUnlink}
-            disabled={isLoading}
+            onClick={handleUnlink}
+            disabled={isUnlinking}
             className="bg-[#ED4245] hover:bg-[#ED4245]/90 text-white"
           >
-            {isLoading ? "Unlinking..." : "Unlink Account"}
+            {t('confirm')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -1,95 +1,88 @@
 'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { ProfileFormData } from "@/types/user"
-
-const formSchema = z.object({
-  summonerName: z.string().min(3, {
-    message: "Summoner name must be at least 3 characters.",
-  }),
-  tagLine: z.string().min(3, {
-    message: "Tag line must be at least 3 characters.",
-  }),
-}) satisfies z.ZodType<ProfileFormData>
+import { useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { ProfileFormData } from '@/types/profile'
+import { UserPlus } from 'lucide-react'
+import { Regions } from 'twisted/dist/constants'
 
 interface SummonerInfoFormProps {
-  initialValues?: ProfileFormData
-  onSubmit: (values: ProfileFormData) => Promise<void>
-  isLoading: boolean
+  onSubmit: (data: ProfileFormData) => Promise<void>
+  loading: boolean
 }
 
-export function SummonerInfoForm({ initialValues, onSubmit, isLoading }: SummonerInfoFormProps) {
-  const form = useForm<ProfileFormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      summonerName: initialValues?.summonerName || "",
-      tagLine: initialValues?.tagLine || "",
-    },
-  })
+export function SummonerInfoForm({ onSubmit, loading }: SummonerInfoFormProps) {
+  const [name, setName] = useState('')
+  const [tagLine, setTagLine] = useState('')
+  const t = useTranslations('Profile')
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSubmit({ 
+      summoner_name: name, 
+      tag_line: tagLine,
+      region: Regions.BRAZIL // Valor padrão para o Brasil
+    })
+  }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-3 bg-[#1E2124] p-4 rounded-lg">
-          <FormField
-            control={form.control}
-            name="summonerName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-200">
-                  Summoner Name
-                </FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Your summoner name" 
-                    {...field}
-                    className="bg-[#2B2D31] border-gray-700 text-white placeholder:text-gray-500 focus-visible:ring-yellow-500"
-                  />
-                </FormControl>
-                <FormMessage className="text-[#ED4245]" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="tagLine"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-200">
-                  Tag Line
-                </FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Your tag line" 
-                    {...field}
-                    className="bg-[#2B2D31] border-gray-700 text-white placeholder:text-gray-500 focus-visible:ring-yellow-500"
-                  />
-                </FormControl>
-                <FormMessage className="text-[#ED4245]" />
-              </FormItem>
-            )}
-          />
-          <Button 
-            type="submit" 
-            disabled={isLoading}
-            className="w-full bg-[#5865F2] hover:bg-[#5865F2]/90 text-white py-2.5 mt-2"
-          >
-            {isLoading ? "Linking..." : "Link Riot Account"}
-          </Button>
+    <div className="relative overflow-hidden">
+      {/* Background Banner */}
+      <div className="absolute inset-0 h-[300px]" />
+      
+      <div className="relative z-10 p-8">
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-8">
+            <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center">
+              <UserPlus className="w-12 h-12 text-[#C89B3C]" />
+            </div>
+            <h1 className="text-2xl font-bold text-[#F0E6D2] mb-2">{t('linkAccount')}</h1>
+            <p className="text-[#A09B8C]">{t('linkAccountDescription')}</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-[#F0E6D2] mb-2">
+                  {t('summonerName')}
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full border border-[#463714] rounded-lg px-4 py-3 text-[#F0E6D2] placeholder-[#A09B8C] focus:outline-none focus:border-[#C89B3C] transition-colors"
+                  placeholder={t('enterSummonerName')}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="tagLine" className="block text-sm font-medium text-[#F0E6D2] mb-2">
+                  {t('tagLine')}
+                </label>
+                <input
+                  type="text"
+                  id="tagLine"
+                  value={tagLine}
+                  onChange={(e) => setTagLine(e.target.value)}
+                  required
+                  className="w-full border border-[#463714] rounded-lg px-4 py-3 text-[#F0E6D2] placeholder-[#A09B8C] focus:outline-none focus:border-[#C89B3C] transition-colors"
+                  placeholder={t('enterTagLine')}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-[#785A28] to-[#C89B3C] hover:from-[#C89B3C] hover:to-[#785A28] text-[#F0E6D2] font-bold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? t('linking') : t('link')}
+            </button>
+          </form>
         </div>
-      </form>
-    </Form>
+      </div>
+    </div>
   )
 }

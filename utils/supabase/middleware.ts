@@ -1,61 +1,62 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  })
+const publicPages = ['/', '/login', '/register']
 
-  try {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return request.cookies.get(name)?.value
-          },
-          set(name: string, value: string, options: CookieOptions) {
-            response.cookies.set({
-              name,
-              value,
-              ...options,
-            })
-          },
-          remove(name: string, options: CookieOptions) {
-            response.cookies.set({
-              name,
-              value: '',
-              ...options,
-            })
-          },
+export async function updateSession(
+  request: NextRequest,
+  response: NextResponse
+) {
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
         },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          )
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          )
+        }
       }
-    )
-
-    const { data: { session }, error } = await supabase.auth.getSession()
-
-    if (error) {
-      console.error('[Middleware] Session error:', error)
-      return response
     }
+  )
 
-    const publicRoutes = ['/login', '/register', '/auth/callback']
-    const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname)
+  // Check if it's a public page
+  const isPublicPage = publicPages.some(page => 
+    request.nextUrl.pathname.endsWith(page)
+  )
 
-    if (!session && !isPublicRoute) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+  // Get session
+  const { data: { session } } = await supabase.auth.getSession()
 
-    if (session && isPublicRoute && request.nextUrl.pathname !== '/auth/callback') {
-      return NextResponse.redirect(new URL('/', request.url))
-    }
-
-    return response
-  } catch (error) {
-    console.error('[Middleware] Error in updateSession:', error)
-    return response
+  // Handle authentication
+  if (!session && !isPublicPage) {
+    // Get the current locale from the URL
+    const pathParts = request.nextUrl.pathname.split('/')
+    const locale = pathParts[1] || 'en' // Default to 'en' if no locale found
+    
+    // Redirect to login page with the current locale
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = `/${locale}/login`
+    return NextResponse.redirect(redirectUrl)
   }
+
+  if (session && (request.nextUrl.pathname.endsWith('/login') || request.nextUrl.pathname.endsWith('/register'))) {
+    // Get the current locale
+    const pathParts = request.nextUrl.pathname.split('/')
+    const locale = pathParts[1] || 'en'
+    
+    // Redirect to home page with the current locale
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = `/${locale}`
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  return response
 }

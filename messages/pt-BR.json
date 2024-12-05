@@ -44,7 +44,8 @@
     "onlineStatus": "Online",
     "version": "Versão",
     "checkUpdates": "Verificar Atualizações",
-    "logout": "Sair"
+    "logout": "Sair",
+    "level": "Nível"
   },
   "Notifications": {
     "title": "Notificações",
@@ -85,6 +86,37 @@
   },
   "Profile": {
     "title": "Perfil",
+    "link": {
+      "title": "Vincular Sua Conta",
+      "description": "Vincule sua conta do League of Legends para acessar seu perfil",
+      "submit": "Vincular Conta",
+      "unlink": "Desvincular Conta",
+      "confirmUnlink": "Tem certeza que deseja desvincular sua conta?"
+    },
+    "form": {
+      "summonerName": "Nome de Invocador",
+      "tagLine": "Tag Line",
+      "region": "Região",
+      "loading": "Carregando..."
+    },
+    "errors": {
+      "missingFields": "Por favor, preencha todos os campos obrigatórios",
+      "fetchingSummoner": "Erro ao buscar dados do invocador",
+      "syncFailed": "Falha ao sincronizar dados do perfil",
+      "invalidSummoner": "Nome de invocador ou tag line inválidos",
+      "apiError": "Erro na API da Riot",
+      "unknown": "Ocorreu um erro desconhecido",
+      "networkError": "Erro de rede. Verifique sua conexão",
+      "serverError": "Erro no servidor. Tente novamente mais tarde",
+      "rateLimitExceeded": "Muitas requisições. Tente novamente mais tarde",
+      "unauthorized": "Acesso não autorizado",
+      "databaseError": "Erro no banco de dados"
+    },
+    "success": {
+      "linked": "Conta vinculada com sucesso",
+      "unlinked": "Conta desvinculada com sucesso",
+      "synced": "Dados do perfil sincronizados com sucesso"
+    },
     "linkAccount": "Vincular Sua Conta",
     "linkAccountDescription": "Digite seu ID Riot para vincular sua conta do League of Legends",
     "summonerName": "Nome de Invocador",
@@ -94,20 +126,39 @@
     "linking": "Vinculando...",
     "link": "Vincular Conta",
     "region": "Região",
+    "selectRegion": "Selecione sua região",
     "level": "Nível",
     "logoAlt": "Logo do League of Legends",
     "submit": "Salvar",
     "loading": "Carregando...",
-    "unlink": "Desvincular Conta",
-    "unlinkConfirm": "Tem certeza que deseja desvincular sua conta?",
-    "unlinkDescription": "Isso removerá todas as informações do seu perfil de invocador",
-    "cancel": "Cancelar",
-    "confirm": "Confirmar",
+    "unlinkAccount": "Desvincular Conta",
+    "unlinkDescription": "Desvincule sua conta da Riot Games do seu perfil. Você pode vincular outra conta depois.",
+    "unlinking": "Desvinculando...",
+    "unlink": "Desvincular",
     "overview": "Visão Geral",
     "champions": "Campeões",
     "matches": "Partidas",
     "ranked": "Ranqueado",
     "unranked": "Não Ranqueado",
+    "profileIcon": "Ícone de Perfil",
+    "defaultTitle": "Invocador",
+    "masteryScore": "Pontuação de Maestria",
+    "veterancy": "Veterania",
+    "challenges": {
+      "level": {
+        "iron": "Ferro",
+        "bronze": "Bronze",
+        "silver": "Prata",
+        "gold": "Ouro",
+        "platinum": "Platina",
+        "diamond": "Diamante",
+        "master": "Mestre",
+        "grandmaster": "Grão-Mestre",
+        "challenger": "Desafiante"
+      }
+    },
+    "summonerInfo": "Informações do Invocador",
+    "summonerInfoDescription": "Seus detalhes e estatísticas de invocador do League of Legends",
     "errors": {
       "missingFields": "Nome de invocador e tag são obrigatórios",
       "fetchingSummoner": "Erro ao buscar dados do invocador"
@@ -210,5 +261,13 @@
     "description": "Desculpe, ocorreu um erro ao processar sua solicitação.",
     "goBack": "Voltar",
     "goHome": "Ir para o início"
+  },
+  "UserDropdown": {
+    "profile": "Perfil",
+    "logout": "Sair",
+    "login": "Entrar",
+    "profileIcon": "Ícone de Perfil",
+    "summonerName": "Nome de Invocador",
+    "email": "E-mail"
   }
 }

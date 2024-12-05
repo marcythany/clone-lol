@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { RiotApi } from 'twisted'
-import { RegionGroups } from 'twisted/dist/constants'
-
-const riotApi = new RiotApi({
-  key: process.env.NEXT_PUBLIC_RIOT_API_KEY as string
-})
+import { riotClient } from '@/lib/services/riot'
 
 export async function GET(
   request: NextRequest,
@@ -21,18 +16,14 @@ export async function GET(
   }
 
   try {
-    const { response: account } = await riotApi.Account.getByRiotId(
-      params.name, 
-      params.tagLine, 
-      RegionGroups.AMERICAS
-    )
+    const account = await riotClient.accounts.fetchByRiotId(params.name, params.tagLine)
 
     return NextResponse.json({
       success: true,
       data: account
     })
   } catch (error) {
-    console.error('[RiotAPI] Error:', error)
+    console.error('[Shieldbow] Error:', error)
     return NextResponse.json(
       {
         success: false,

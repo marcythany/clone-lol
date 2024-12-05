@@ -24,9 +24,10 @@ export function GameCard({ game }: GameCardProps) {
       exit={{ opacity: 0, y: -20 }}
       className={cn(
         'group relative overflow-hidden rounded-xl',
+        'glass-elevation-2',
         'border border-[#C89B3C]/10',
         'transition-all duration-300',
-        'hover:border-[#C89B3C]/30 hover:shadow-lg hover:shadow-[#C89B3C]/5',
+        'hover:glass-elevation-3',
         game.modes ? 'cursor-pointer' : ''
       )}
       onClick={() => game.modes && setIsExpanded(!isExpanded)}
@@ -50,7 +51,7 @@ export function GameCard({ game }: GameCardProps) {
       
       <div className="relative p-6">
         <div className="flex items-start gap-4">
-          <div className="p-3 bg-[#C89B3C]/20 backdrop-blur-sm rounded-lg">
+          <div className="glass-elevation-1 p-3 rounded-lg">
             {Icon && <Icon className="w-6 h-6 text-[#C89B3C]" />}
           </div>
           
@@ -65,7 +66,7 @@ export function GameCard({ game }: GameCardProps) {
                 </p>
               </div>
               {game.isPopular && (
-                <span className="px-2 py-1 text-xs bg-[#C89B3C]/20 text-[#C89B3C] rounded-full backdrop-blur-sm">
+                <span className="glass-elevation-1 px-2 py-1 text-xs text-[#C89B3C] rounded-full">
                   {t('popular')}
                 </span>
               )}
@@ -99,7 +100,7 @@ export function GameCard({ game }: GameCardProps) {
                     e.stopPropagation();
                     // Aqui você pode adicionar a lógica para iniciar o jogo
                   }}
-                  className="ml-auto flex items-center gap-2 px-4 py-2 bg-[#C89B3C] text-[#1E282D] rounded-lg text-sm font-medium"
+                  className="glass-elevation-3 ml-auto flex items-center gap-2 px-4 py-2 bg-gradient-to-b from-[#C89B3C] to-[#785A28] text-[#1E282D] rounded-lg text-sm font-medium interactive-hover"
                 >
                   <Gamepad2 className="w-4 h-4" />
                   {t('playNow')}
@@ -125,9 +126,8 @@ export function GameCard({ game }: GameCardProps) {
                       key={mode.id}
                       className={cn(
                         'flex items-center gap-2 p-3 rounded-lg',
-                        'bg-[#C89B3C]/10 hover:bg-[#C89B3C]/20',
-                        'transition-colors duration-200 group',
-                        'backdrop-blur-sm'
+                        'glass-elevation-1 interactive-hover',
+                        'transition-all duration-200 group'
                       )}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -136,16 +136,17 @@ export function GameCard({ game }: GameCardProps) {
                         // Aqui você pode adicionar a lógica para iniciar o modo específico
                       }}
                     >
-                      <ModeIcon className="w-5 h-5 text-[#C89B3C]" />
-                      <div className="text-left flex-1">
-                        <div className="text-sm font-medium text-white">
-                          {t(`gameMode.${mode.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase())}.name`)}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {t(`gameMode.${mode.id.replace(/-([a-z])/g, (g) => g[1].toUpperCase())}.description`)}
-                        </div>
+                      <div className="glass-elevation-2 p-2 rounded-lg">
+                        {ModeIcon && <ModeIcon className="w-4 h-4 text-[#C89B3C]" />}
                       </div>
-                      <Gamepad2 className="w-4 h-4 text-[#C89B3C] opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="flex-1 text-left">
+                        <h4 className="text-sm font-medium text-[#C89B3C] mb-0.5">
+                          {t(`gameMode.${game.translationKey}.modes.${mode.id}.name`)}
+                        </h4>
+                        <p className="text-xs text-gray-400 line-clamp-1">
+                          {t(`gameMode.${game.translationKey}.modes.${mode.id}.description`)}
+                        </p>
+                      </div>
                     </motion.button>
                   );
                 })}

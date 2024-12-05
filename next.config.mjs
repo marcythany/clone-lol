@@ -8,6 +8,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'raw.communitydragon.org',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.contentstack.io',
         pathname: '/**',
       },
@@ -23,6 +28,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'cdn.communitydragon.org',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'ddragon.leagueoflegends.com',
         pathname: '/**',
       },
@@ -33,7 +43,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
+        hostname: 'raw.communitydragon.org',
         pathname: '/**',
       },
     ],

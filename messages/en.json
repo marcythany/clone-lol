@@ -44,7 +44,8 @@
     "onlineStatus": "Online",
     "version": "Version",
     "checkUpdates": "CheckForUpdates",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "level": "Level"
   },
   "Notifications": {
     "title": "Notifications",
@@ -85,8 +86,41 @@
   },
   "Profile": {
     "title": "Profile",
+    "link": {
+      "title": "Link Your Account",
+      "description": "Link your League of Legends account to access your profile",
+      "submit": "Link Account",
+      "unlink": "Unlink Account",
+      "confirmUnlink": "Are you sure you want to unlink your account?"
+    },
+    "form": {
+      "summonerName": "Summoner Name",
+      "tagLine": "Tag Line",
+      "region": "Region",
+      "loading": "Loading..."
+    },
+    "errors": {
+      "missingFields": "Please fill in all required fields",
+      "fetchingSummoner": "Error fetching summoner data",
+      "syncFailed": "Failed to sync profile data",
+      "invalidSummoner": "Invalid summoner name or tag line",
+      "apiError": "Riot API error",
+      "unknown": "An unknown error occurred",
+      "networkError": "Network error. Please check your connection",
+      "serverError": "Server error. Please try again later",
+      "rateLimitExceeded": "Too many requests. Please try again later",
+      "unauthorized": "Unauthorized access",
+      "databaseError": "Database error"
+    },
+    "success": {
+      "linked": "Account linked successfully",
+      "unlinked": "Account unlinked successfully",
+      "synced": "Profile data synced successfully"
+    },
     "linkAccount": "Link Your Account",
     "linkAccountDescription": "Enter your Riot ID to link your League of Legends account",
+    "summonerInfo": "Summoner Information",
+    "summonerInfoDescription": "Your League of Legends summoner details and statistics",
     "summonerName": "Summoner Name",
     "enterSummonerName": "Enter your summoner name",
     "tagLine": "Tag Line",
@@ -94,13 +128,16 @@
     "linking": "Linking...",
     "link": "Link Account",
     "region": "Region",
+    "selectRegion": "Select your region",
     "level": "Level",
     "logoAlt": "League of Legends Logo",
     "submit": "Save",
     "loading": "Loading...",
-    "unlink": "UnlinkAccount",
+    "unlinkAccount": "Unlink Account",
+    "unlinkDescription": "Unlink your Riot Games account from your profile. You can link another account later.",
+    "unlinking": "Unlinking...",
+    "unlink": "Unlink",
     "unlinkConfirm": "AreYouSureYouWantToUnlinkYourAccount",
-    "unlinkDescription": "ThisWillRemoveAllYourSummonerProfileInformation",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "overview": "Overview",
@@ -108,6 +145,23 @@
     "matches": "Matches",
     "ranked": "Ranked",
     "unranked": "Unranked",
+    "profileIcon": "Profile Icon",
+    "defaultTitle": "Summoner",
+    "masteryScore": "Mastery Score",
+    "veterancy": "Veterancy",
+    "challenges": {
+      "level": {
+        "iron": "Iron",
+        "bronze": "Bronze",
+        "silver": "Silver",
+        "gold": "Gold",
+        "platinum": "Platinum",
+        "diamond": "Diamond",
+        "master": "Master",
+        "grandmaster": "Grandmaster",
+        "challenger": "Challenger"
+      }
+    },
     "errors": {
       "missingFields": "Summoner name and tag are required",
       "fetchingSummoner": "Error fetching summoner data"
@@ -204,5 +258,10 @@
   "LocaleSwitcher": {
     "label": "Change language",
     "locale": "{locale, select, pt-BR {Portuguese} en {English} other {Unknown}}"
+  },
+  "UserDropdown": {
+    "profile": "Profile",
+    "logout": "Log Out",
+    "login": "Log In"
   }
 }

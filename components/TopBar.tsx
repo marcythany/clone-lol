@@ -99,7 +99,7 @@ export function TopBar() {
               {!loading && iconUrl && (
                 <Image
                   src={iconUrl}
-                  alt=""
+                  alt="Profile Icon"
                   width={32}
                   height={32}
                   className="w-full h-full object-cover"
@@ -120,7 +120,12 @@ export function TopBar() {
           <UserDropdown 
             isOpen={isProfileOpen} 
             onClose={() => setIsProfileOpen(false)}
-            profile={profile}
+            profile={profile ? {
+              profile: profile,
+              app_metadata: {},
+              user_metadata: {},
+              aud: ''
+            } : null}
             loading={loading}
           />
         </div>

@@ -1,70 +1,61 @@
-'use client'
-
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { Loader2, Unlink } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 interface UnlinkButtonProps {
   onUnlink: () => Promise<void>
 }
 
 export function UnlinkButton({ onUnlink }: UnlinkButtonProps) {
-  const [isUnlinking, setIsUnlinking] = useState(false)
   const t = useTranslations('Profile')
+  const [loading, setLoading] = useState(false)
 
   const handleUnlink = async () => {
-    setIsUnlinking(true)
-    try {
-      await onUnlink()
-    } finally {
-      setIsUnlinking(false)
-    }
+    setLoading(true)
+    await onUnlink()
+    setLoading(false)
   }
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button 
-          variant="destructive" 
-          className="w-full bg-[#ED4245] hover:bg-[#ED4245]/90 text-white"
-          disabled={isUnlinking}
-        >
-          {t('unlink')}
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent className="bg-[#2B2D31] border-gray-700">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="text-white">
-            {t('unlinkConfirm')}
-          </AlertDialogTitle>
-          <AlertDialogDescription className="text-gray-400">
+    <motion.div 
+      className="glass-elevation-1 rounded-xl p-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-[#C89B3C] mb-2">
+            {t('unlinkAccount')}
+          </h2>
+          <p className="text-sm text-gray-400">
             {t('unlinkDescription')}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel className="bg-gray-700 text-white hover:bg-gray-600">
-            {t('cancel')}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleUnlink}
-            disabled={isUnlinking}
-            className="bg-[#ED4245] hover:bg-[#ED4245]/90 text-white"
-          >
-            {t('confirm')}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </p>
+        </div>
+        <Button
+          onClick={handleUnlink}
+          variant="destructive"
+          disabled={loading}
+          className="glass-elevation-2 hover:glass-elevation-3"
+        >
+          {loading ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-2"
+            >
+              <Loader2 className="h-4 w-4 animate-spin" />
+              {t('unlinking')}
+            </motion.div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Unlink className="h-4 w-4" />
+              {t('unlink')}
+            </div>
+          )}
+        </Button>
+      </div>
+    </motion.div>
   )
 }

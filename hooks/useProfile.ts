@@ -49,6 +49,7 @@ export function useProfile() {
             .from('profiles')
             .select(`
               *,
+              challenges,
               ranked_info!fk_ranked_info_profile_id (
                 queue_type,
                 tier,
@@ -78,6 +79,7 @@ export function useProfile() {
                   .from('profiles')
                   .select(`
                     *,
+                    challenges,
                     ranked_info!fk_ranked_info_profile_id (
                       queue_type,
                       tier,

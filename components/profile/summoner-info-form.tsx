@@ -1,88 +1,158 @@
-'use client'
-
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { ProfileFormData } from '@/types/profile'
-import { UserPlus } from 'lucide-react'
-import { Regions } from 'twisted/dist/constants'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import type { Region } from 'shieldbow'
+import { ProfileFormData } from '@/types'
+import { toast } from 'react-hot-toast'
+import { useAuth } from '@/hooks/useAuth'
 
 interface SummonerInfoFormProps {
   onSubmit: (data: ProfileFormData) => Promise<void>
-  loading: boolean
+  loading?: boolean
 }
 
-export function SummonerInfoForm({ onSubmit, loading }: SummonerInfoFormProps) {
-  const [name, setName] = useState('')
-  const [tagLine, setTagLine] = useState('')
-  const t = useTranslations('Profile')
+const initialFormState: ProfileFormData = {
+  summoner_name: '',
+  tag_line: '',
+  region: 'br' as Region,
+  userId: ''
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+const REGIONS: { value: Region; label: string }[] = [
+  { value: 'br', label: 'Brazil' },
+  { value: 'eune', label: 'Europe Nordic & East' },
+  { value: 'euw', label: 'Europe West' },
+  { value: 'jp', label: 'Japan' },
+  { value: 'kr', label: 'Korea' },
+  { value: 'lan', label: 'Latin America North' },
+  { value: 'las', label: 'Latin America South' },
+  { value: 'na', label: 'North America' },
+  { value: 'oce', label: 'Oceania' },
+  { value: 'tr', label: 'Turkey' },
+  { value: 'ru', label: 'Russia' },
+];
+
+export function SummonerInfoForm({ onSubmit, loading = false }: SummonerInfoFormProps) {
+  const [formData, setFormData] = useState<ProfileFormData>(initialFormState)
+  const [isLoading, setIsLoading] = useState(false)
+  const t = useTranslations('Profile')
+  const router = useRouter()
+  const { user } = useAuth()
+
+  const handleChange = (field: keyof ProfileFormData) => (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: e.target.value
+    }))
+  }
+
+  const handleRegionChange = (value: Region) => {
+    setFormData(prev => ({
+      ...prev,
+      region: value
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit({ 
-      summoner_name: name, 
-      tag_line: tagLine,
-      region: Regions.BRAZIL // Valor padrão para o Brasil
-    })
+    if (!user?.id || !formData.summoner_name || !formData.tag_line || !formData.region) {
+      toast.error(t('form.error.missingFields'))
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      await onSubmit({
+        ...formData,
+        userId: user.id
+      })
+      toast.success(t('form.success'))
+      router.refresh()
+    } catch (error) {
+      console.error('[SummonerInfoForm] Error:', error)
+      toast.error(t('form.error.generic'))
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Background Banner */}
-      <div className="absolute inset-0 h-[300px]" />
-      
-      <div className="relative z-10 p-8">
-        <div className="max-w-md mx-auto">
-          <div className="text-center mb-8">
-            <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center">
-              <UserPlus className="w-12 h-12 text-[#C89B3C]" />
-            </div>
-            <h1 className="text-2xl font-bold text-[#F0E6D2] mb-2">{t('linkAccount')}</h1>
-            <p className="text-[#A09B8C]">{t('linkAccountDescription')}</p>
+    <motion.form
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      onSubmit={handleSubmit}
+      className="space-y-6"
+    >
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="summoner_name">{t('form.summonerName')}</Label>
+            <Input
+              id="summoner_name"
+              placeholder={t('form.summonerNamePlaceholder')}
+              value={formData.summoner_name}
+              onChange={handleChange('summoner_name')}
+              disabled={isLoading}
+              required
+            />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="tag_line">{t('form.tagLine')}</Label>
+            <Input
+              id="tag_line"
+              placeholder={t('form.tagLinePlaceholder')}
+              value={formData.tag_line}
+              onChange={handleChange('tag_line')}
+              disabled={isLoading}
+              required
+            />
+          </div>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-[#F0E6D2] mb-2">
-                  {t('summonerName')}
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full border border-[#463714] rounded-lg px-4 py-3 text-[#F0E6D2] placeholder-[#A09B8C] focus:outline-none focus:border-[#C89B3C] transition-colors"
-                  placeholder={t('enterSummonerName')}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="tagLine" className="block text-sm font-medium text-[#F0E6D2] mb-2">
-                  {t('tagLine')}
-                </label>
-                <input
-                  type="text"
-                  id="tagLine"
-                  value={tagLine}
-                  onChange={(e) => setTagLine(e.target.value)}
-                  required
-                  className="w-full border border-[#463714] rounded-lg px-4 py-3 text-[#F0E6D2] placeholder-[#A09B8C] focus:outline-none focus:border-[#C89B3C] transition-colors"
-                  placeholder={t('enterTagLine')}
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-[#785A28] to-[#C89B3C] hover:from-[#C89B3C] hover:to-[#785A28] text-[#F0E6D2] font-bold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? t('linking') : t('link')}
-            </button>
-          </form>
+        <div className="space-y-2">
+          <Label htmlFor="region">{t('form.region')}</Label>
+          <Select
+            value={formData.region}
+            onValueChange={handleRegionChange}
+            disabled={isLoading}
+          >
+            <SelectTrigger id="region">
+              <SelectValue placeholder={t('form.regionPlaceholder')} />
+            </SelectTrigger>
+            <SelectContent>
+              {REGIONS.map(region => (
+                <SelectItem key={region.value} value={region.value}>
+                  {region.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
-    </div>
+
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            {t('form.linking')}
+          </>
+        ) : (
+          t('form.link')
+        )}
+      </Button>
+    </motion.form>
   )
 }

@@ -4,20 +4,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "glass-elevation-2 hover:glass-elevation-3 text-white",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "glass-elevation-2 hover:glass-elevation-3 text-red-500",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "glass-effect border border-[#C89B3C]/20 hover:glass-effect-strong",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "glass-elevation-1 hover:glass-elevation-2 text-[#C89B3C]",
+        ghost: "hover:glass-effect",
+        link: "text-[#C89B3C] underline-offset-4 hover:underline",
+        gold: "bg-gradient-to-b from-[#C89B3C] to-[#785A28] text-[#1E282D] hover:from-[#F0B254] hover:to-[#C89B3C]",
       },
       size: {
         default: "h-9 px-4 py-2",

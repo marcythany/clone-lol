@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { useTranslations } from 'next-intl'
-import { RegionGroups } from 'twisted/dist/constants'
 import { useProfile } from '@/hooks/useProfile'
 import { ProfileDisplay } from '@/components/profile/profile-display'
-import { SummonerInfoForm } from '@/components/profile/summoner-info-form'
-import { UnlinkButton } from '@/components/profile/unlink-button'
+import { SummonerInfoForm } from '@/components/profile/summoner-info-form.client'
+import { UnlinkButton } from '@/components/profile/unlink-button.client'
 import { ProfileFormData, ProfileFormProps } from '@/types/profile'
+import axios from 'axios'
 
 export function ProfileForm({ userId }: ProfileFormProps) {
   const supabase = createClient()
@@ -29,8 +29,7 @@ export function ProfileForm({ userId }: ProfileFormProps) {
       console.log('[ProfileForm] Submitting:', formData)
 
       // Get Riot account data
-      const riotResponse = await fetch(`/api/riot/account/${formData.summoner_name}/${formData.tag_line}`)
-      const riotData = await riotResponse.json()
+      const { data: riotData } = await axios.get(`/api/riot/account/${formData.summoner_name}/${formData.tag_line}`)
 
       if (!riotData.success) {
         throw new Error(riotData.message || t('errors.fetchingSummoner'))
@@ -56,30 +55,27 @@ export function ProfileForm({ userId }: ProfileFormProps) {
       }
 
       // Sync profile data with Riot API
-      const syncResponse = await fetch('/api/riot/sync', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          puuid: riotData.data.puuid,
-          region: formData.region,
-        }),
+      const { data: syncData } = await axios.post('/api/riot/sync', {
+        userId,
+        puuid: riotData.data.puuid,
+        region: formData.region,
       })
 
-      const syncData = await syncResponse.json()
-      if (!syncData.success) {
-        throw new Error(syncData.message || 'Failed to sync profile data')
-      }
-
       console.log('[ProfileForm] Sync completed:', syncData)
+
+      if (!syncData.summoner) {
+        throw new Error(t('errors.syncFailed'))
+      }
 
       router.refresh()
     } catch (error: any) {
       console.error('[ProfileForm] Error:', error)
-      // TODO: Add toast notification for error
-      throw error
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.error || t('errors.unknown'))
+      }
+      throw error instanceof Error 
+        ? error 
+        : new Error(t('errors.unknown'))
     } finally {
       setFormLoading(false)
     }
@@ -96,17 +92,27 @@ export function ProfileForm({ userId }: ProfileFormProps) {
           summoner_name: null,
           tag_line: null,
           region: null,
+          mastery_score: null,
+          challenges: null,
+          summoner_level: null,
+          profile_icon_id: null,
         })
         .eq('id', userId)
 
       if (error) {
-        throw error
+        console.error('[ProfileForm] Error:', error)
+        throw new Error(t('errors.databaseError'))
       }
 
       router.refresh()
-    } catch (error) {
+    } catch (error: any) {
       console.error('[ProfileForm] Error:', error)
-      // Handle error (show toast, etc.)
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.error || t('errors.unknown'))
+      }
+      throw error instanceof Error 
+        ? error 
+        : new Error(t('errors.unknown'))
     } finally {
       setFormLoading(false)
     }

@@ -5,11 +5,11 @@ import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
 import { Bell, ChevronDown, LogOut, Settings, User2 } from 'lucide-react'
 import { createClient } from '@/utils/supabase/client'
-import { useDataDragon } from '@/hooks/useDataDragon'
+import { useRiotAssets } from '@/hooks/use-riot-assets'
 import Image from 'next/image'
 import { Profile } from '@/types/profile'
 import { useTranslations } from 'next-intl'
-import {cn} from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 interface HeaderProps {
   user: User | null
@@ -20,7 +20,7 @@ export function Header({ user, onSignOut }: HeaderProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [profile, setProfile] = useState<Profile | null>(null)
   const supabase = createClient()
-  const { getProfileIconUrl } = useDataDragon()
+  const { getProfileIconUrl } = useRiotAssets()
   const t = useTranslations('Header')
 
   useEffect(() => {
@@ -52,9 +52,9 @@ export function Header({ user, onSignOut }: HeaderProps) {
   return (
     <header className={cn(
       "fixed top-0 right-0 left-0 z-50 h-16",
-      "bg-[#0A1428]/70 backdrop-blur-md",
+      "glass-elevation-1",
       "border-b border-[#C89B3C]/10",
-      "transition-colors duration-200"
+      "transition-all duration-200"
     )}>
       <div className="container h-full flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -84,10 +84,10 @@ export function Header({ user, onSignOut }: HeaderProps) {
           </nav>
 
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#C89B3C]/10 flex items-center justify-center">
+            <div className="glass-elevation-2 w-8 h-8 rounded-full flex items-center justify-center interactive-hover">
               <Bell className="w-4 h-4 text-[#C89B3C]" />
             </div>
-            <div className="w-8 h-8 rounded-full bg-[#C89B3C]/10 flex items-center justify-center">
+            <div className="glass-elevation-2 w-8 h-8 rounded-full flex items-center justify-center interactive-hover">
               <Settings className="w-4 h-4 text-[#C89B3C]" />
             </div>
             <div className="relative">
@@ -112,17 +112,17 @@ export function Header({ user, onSignOut }: HeaderProps) {
               </button>
 
               {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5">
+                <div className="absolute right-0 mt-2 w-48 glass-elevation-3 rounded-lg border border-[#C89B3C]/10">
                   <div className="py-1">
                     <Link
                       href="/profile"
-                      className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-slate-700"
+                      className="block px-4 py-2 text-sm text-gray-300 hover:text-white interactive-hover"
                     >
                       Profile
                     </Link>
                     <button
                       onClick={onSignOut}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-slate-700 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white interactive-hover flex items-center space-x-2"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Sign out</span>

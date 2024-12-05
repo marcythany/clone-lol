@@ -1,4 +1,4 @@
-import { Locale } from '@/i18n/routingg';
+import { Locale } from '@/i18n/routing';
 import { NavigationConfig } from 'next-intl/navigation';
 import { ComponentProps } from 'react';
 import { UrlObject } from 'url';

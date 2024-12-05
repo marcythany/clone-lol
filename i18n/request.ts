@@ -1,17 +1,33 @@
-import { getRequestConfig } from 'next-intl/server'
-import { routing } from './routing'
+import { headers } from 'next/headers';
+import { getRequestConfig } from 'next-intl/server';
+import { defaultLocale, locales } from './config';
+import type { Locale } from './config';
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  // Obter o locale da requisição (tipicamente corresponde ao segmento [locale])
-  let locale = await requestLocale
+export function getLocale(): Locale {
+  const headersList = headers();
+  const locale = headersList.get('x-next-locale') || defaultLocale;
+  return locale as Locale;
+}
+
+export async function getMessages(locale: Locale = defaultLocale) {
+  try {
+    return (await import(`@/messages/${locale}.json`)).default;
+  } catch (error) {
+    console.error(`Failed to load messages for locale: ${locale}`, error);
+    // Fallback to default locale if requested locale fails to load
+    if (locale !== defaultLocale) {
+      return getMessages(defaultLocale);
+    }
+    throw error;
+  }
+}
+
+export default async function getI18nConfig({ locale }: { locale: Locale }) {
+  const messages = await getMessages(locale);
   
-  // Garantir que o locale é válido
-  if (!locale || !routing.locales.includes(locale as any)) {
-    locale = routing.defaultLocale
-  }
-
   return {
-    locale,
-    messages: (await import(`../messages/${locale}.json`)).default
-  }
-})
+    messages,
+    timeZone: 'America/Sao_Paulo',
+    now: new Date(),
+  };
+}

@@ -4,10 +4,12 @@ import {
   getSummonerData, 
   getRankedInfo, 
   getChampionScore, 
-  getChallengesInfo 
-} from '@/lib/riot';
-import { RiotConfig } from '@/lib/riotConfig';
+  getChallengesInfo,
+  getHonorLevel
+} from '@/lib/riot.server';
+import { RiotConfig } from '@/types/riot';
 import { z } from 'zod';
+import { getLocale, getMessages } from '@/i18n/request';
 
 if (!process.env.RIOT_API_KEY) {
   throw new Error('RIOT_API_KEY environment variable is not set');
@@ -20,17 +22,18 @@ const syncBodySchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const locale = getLocale();
+  const messages = await getMessages(locale);
+  const t = messages.Profile.errors;
+
   try {
     const body = await request.json();
     const validatedBody = syncBodySchema.parse(body);
 
-    const config: RiotConfig = {
-      summonerName: '',  // Not needed for sync as we use PUUID
-      tagLine: '',       // Not needed for sync as we use PUUID
+    const config: Partial<RiotConfig> = {
       region: validatedBody.region as any,
-      regionGroup: validatedBody.region as any, // Will be converted by the API
       puuid: validatedBody.puuid,
-      apiKey: process.env.RIOT_API_KEY // Add API key to config
+      apiKey: process.env.RIOT_API_KEY
     };
 
     // Get all profile data in parallel
@@ -38,110 +41,66 @@ export async function POST(request: Request) {
       summoner,
       rankedInfo,
       championMasteriesData,
-      challenges
+      challenges,
+      honorData
     ] = await Promise.all([
-      getSummonerData({ ...config, puuid: validatedBody.puuid }),
-      getRankedInfo({ ...config, puuid: validatedBody.puuid }),
-      getChampionScore({ ...config, puuid: validatedBody.puuid }),
-      getChallengesInfo({ ...config, puuid: validatedBody.puuid })
+      getSummonerData(config).catch(() => { throw new Error(t.fetchingSummoner); }),
+      getRankedInfo(config).catch(() => { throw new Error(t.apiError); }),
+      getChampionScore(config).catch(() => { throw new Error(t.apiError); }),
+      getChallengesInfo(config).catch(() => { throw new Error(t.apiError); }),
+      getHonorLevel(config).catch(() => { throw new Error(t.apiError); })
     ]);
 
-    // Extract champion masteries from the response
-    const championMasteries = championMasteriesData.champions;
-
-    // Start a transaction to update all data
+    // Create Supabase client
     const supabase = await createClient();
-    const { error: txnError } = await supabase.rpc('begin_transaction');
-    
-    try {
-      // Update profile
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({
-          summoner_level: summoner.summonerLevel,
-          profile_icon_id: summoner.profileIconId,
-          challenges: challenges,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', validatedBody.userId);
 
-      if (updateError) {
-        throw updateError;
-      }
+    // Update profile data in database
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({
+        summoner_name: summoner.name,
+        profile_icon_id: summoner.profileIconId,
+        summoner_level: summoner.summonerLevel,
+        challenges,
+        mastery_score: championMasteriesData,
+        honor_level: honorData.honorLevel,
+        honor_checkpoint: honorData.checkpoint,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', validatedBody.userId);
 
-      // Update ranked info
-      for (const queue of rankedInfo) {
-        const { error: rankedError } = await supabase
-          .from('ranked_info')
-          .upsert({
-            profile_id: validatedBody.userId,
-            queue_type: queue.queueType,
-            tier: queue.tier,
-            division: queue.rank,
-            league_points: queue.leaguePoints,
-            wins: queue.wins,
-            losses: queue.losses,
-            updated_at: new Date().toISOString(),
-          }, {
-            onConflict: 'profile_id,queue_type'
-          });
-
-        if (rankedError) {
-          throw rankedError;
-        }
-      }
-
-      // Update champion masteries
-      for (const mastery of championMasteries) {
-        const { error: masteryError } = await supabase
-          .from('champion_masteries')
-          .upsert({
-            profile_id: validatedBody.userId,
-            champion_id: mastery.championId,
-            champion_level: mastery.championLevel,
-            champion_points: mastery.championPoints,
-            last_play_time: mastery.lastPlayTime,
-            champion_points_since_last_level: mastery.championPointsSinceLastLevel,
-            champion_points_until_next_level: mastery.championPointsUntilNextLevel,
-            chest_granted: mastery.chestGranted,
-            tokens_earned: mastery.tokensEarned,
-            updated_at: new Date().toISOString(),
-          }, {
-            onConflict: 'profile_id,champion_id'
-          });
-
-        if (masteryError) {
-          throw masteryError;
-        }
-      }
-
-      // Commit transaction
-      await supabase.rpc('commit_transaction');
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          summoner: {
-            summonerLevel: summoner.summonerLevel,
-            profileIconId: summoner.profileIconId,
-          },
-          rankedInfo,
-          championMasteries,
-          challenges,
-        },
-      });
-    } catch (error) {
-      // Rollback transaction on error
-      await supabase.rpc('rollback_transaction');
-      throw error;
+    if (updateError) {
+      console.error('[/api/riot/sync] Database update error:', updateError);
+      throw new Error(t.databaseError);
     }
+
+    return NextResponse.json({
+      summoner,
+      rankedInfo,
+      championMasteries: championMasteriesData,
+      challenges,
+      honor: honorData
+    });
   } catch (error) {
     console.error('[/api/riot/sync] Error:', error);
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: t.missingFields }, { status: 400 });
+    }
+
+    if (error instanceof Error) {
+      const status = 
+        error.message === t.unauthorized ? 401 :
+        error.message === t.rateLimitExceeded ? 429 :
+        error.message === t.databaseError ? 500 :
+        error.message === t.apiError ? 502 :
+        500;
+
+      return NextResponse.json({ error: error.message }, { status });
+    }
+
     return NextResponse.json(
-      {
-        success: false,
-        message: error instanceof Error ? error.message : 'Failed to sync profile data',
-      },
+      { error: t.unknown },
       { status: 500 }
     );
   }

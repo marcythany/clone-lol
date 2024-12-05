@@ -1,4 +1,9 @@
 import { User } from "@supabase/supabase-js"
-import { Database } from "./supabase"
 
-export type UserWithProfile = User & { profile: any | null }
+export type UserWithProfile = User & { 
+  profile: {
+    profile_icon_id?: number | null;
+    [key: string]: any;
+  } | null 
+}
+export type Profile = NonNullable<UserWithProfile['profile']>;

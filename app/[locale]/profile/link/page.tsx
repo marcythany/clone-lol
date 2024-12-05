@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { SummonerInfoForm } from '@/components/profile/summoner-info-form'
+import { SummonerInfoForm } from '@/components/profile/summoner-info-form.client'
 import { ProfileFormData } from '@/types/profile'
+import axios from 'axios'
 
 export default function LinkProfilePage() {
   const [loading, setLoading] = useState(false)
@@ -15,15 +16,8 @@ export default function LinkProfilePage() {
       console.log('[ProfileForm] Submitting:', data)
 
       // Call the link endpoint
-      const response = await fetch('/api/riot/link', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
+      const { data: result } = await axios.post('/api/riot/link', data)
 
-      const result = await response.json()
       console.log('[ProfileForm] Riot data:', result)
 
       if (!result.success) {

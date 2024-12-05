@@ -22,7 +22,7 @@ export function Sidebar() {
     <motion.aside 
       initial={{ x: -64 }}
       animate={{ x: 0 }}
-      className="w-16 bg-[#010A13] border-r border-[#1E282D] flex flex-col items-center py-4 z-50"
+      className="w-16 glass-elevation-2 border-r border-[#C89B3C]/10 flex flex-col items-center py-4 z-50"
     >
 
       {/* Logo */}
@@ -39,7 +39,7 @@ export function Sidebar() {
         <motion.div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="w-9 h-9 bg-gradient-to-b from-[#C89B3C] to-[#785A28] rounded-xl flex items-center justify-center shadow-lg hover:shadow-[#C89B3C]/20 transition-shadow group"
+          className="w-9 h-9 glass-elevation-3 bg-gradient-to-b from-[#C89B3C] to-[#785A28] rounded-xl flex items-center justify-center shadow-lg hover:shadow-[#C89B3C]/20 transition-all group"
         >
           <Play className="w-6 h-6 text-[#1E282D] group-hover:text-black transition-colors" fill="currentColor" />
         </motion.div>
@@ -63,8 +63,8 @@ export function Sidebar() {
                     'w-10 h-10 flex items-center justify-center rounded-lg',
                     'transition-all duration-200',
                     isActive
-                      ? 'text-[#C89B3C] bg-[#1E282D]'
-                      : 'text-[#A1A1A1] hover:text-[#C89B3C] hover:bg-[#1E282D]'
+                      ? 'glass-elevation-3 text-[#C89B3C]'
+                      : 'text-[#A1A1A1] hover:text-[#C89B3C] interactive-hover'
                   )}
                   aria-label={item.label}
                 >
@@ -80,7 +80,7 @@ export function Sidebar() {
                   'group-hover:opacity-100 transition-all duration-200'
                 )}
               >
-                <div className="bg-[#1E282D] px-2 py-1 rounded text-xs whitespace-nowrap">
+                <div className="glass-elevation-2 px-2 py-1 rounded text-xs whitespace-nowrap">
                   <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-2 h-2 bg-[#1E282D] rotate-45" />
                   <span className="relative text-[#C89B3C]">{item.label}</span>
                 </div>

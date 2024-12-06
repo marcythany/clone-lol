@@ -1,0 +1,107 @@
+{
+  "Index": {
+    "hero": {
+      "title": "Welcome to Clone Legends",
+      "description": "A modern League of Legends client experience, built with the latest web technologies.",
+      "cta": {
+        "register": "Create Account",
+        "login": "Sign In"
+      }
+    },
+    "features": {
+      "ranked": {
+        "title": "Ranked System",
+        "description": "Compete in ranked matches and climb the ladder."
+      },
+      "social": {
+        "title": "Social Features",
+        "description": "Connect with friends and form teams to play together."
+      },
+      "rewards": {
+        "title": "Rewards",
+        "description": "Earn exclusive rewards for your achievements."
+      }
+    },
+    "footer": {
+      "copyright": "© 2024 Clone Legends. All rights reserved.",
+      "links": {
+        "terms": "Terms of Use",
+        "privacy": "Privacy Policy"
+      }
+    }
+  },
+  "Auth": {
+    "login": {
+      "title": "Sign In",
+      "description": "Sign in to your account to continue",
+      "form": {
+        "username": "Username",
+        "password": "Password",
+        "submit": "Sign In",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "register": "Register"
+      }
+    },
+    "register": {
+      "title": "Create Account",
+      "description": "Create your account to start playing",
+      "form": {
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Create Account",
+        "hasAccount": "Already have an account?",
+        "login": "Sign In"
+      }
+    }
+  },
+  "Main": {
+    "nav": {
+      "home": "Home",
+      "play": "Play",
+      "profile": "Profile",
+      "settings": "Settings"
+    },
+    "play": {
+      "title": "Play",
+      "modes": {
+        "normal": {
+          "title": "Normal",
+          "description": "Play casual 5v5 matches"
+        },
+        "ranked": {
+          "title": "Ranked",
+          "description": "Compete in ranked matches"
+        },
+        "custom": {
+          "title": "Custom",
+          "description": "Create your own match"
+        }
+      },
+      "queue": {
+        "estimated": "Estimated Queue",
+        "join": "Join Queue",
+        "players": {
+          "inQueue": "In Queue",
+          "inGame": "In Game"
+        }
+      }
+    },
+    "profile": {
+      "edit": "Edit Profile",
+      "stats": {
+        "title": "Statistics",
+        "winRate": "Win Rate",
+        "kda": "Average KDA",
+        "mostPlayed": "Most Played Champion"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "history": "History",
+        "settings": "Settings"
+      }
+    }
+  }
+} 

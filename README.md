@@ -1,23 +1,23 @@
 # Clone Legends
 
-Uma aplicação fullstack moderna que replica a experiência do cliente do League of Legends, construída com Next.js 14 e Supabase.
+Uma aplicação fullstack moderna que replica a experiência do cliente do League of Legends, construída com Next.js e Supabase.
 
 ## 🚀 Funcionalidades
 
-- **Stack Moderna**: Construído com Next.js 14, React 18 e TypeScript
-- **Backend Robusto**: Supabase para banco de dados, autenticação e armazenamento
+- **Stack Moderna**: Construído com Next.js, React 19 e TypeScript
+- **Backend Robusto**: Supabase para banco de dados, autenticação, armazenamento e cache
 - **Atualizações em Tempo Real**: Suporte a WebSocket para atualizações ao vivo
 - **Interface Responsiva**: UI moderna construída com Tailwind CSS e Shadcn/UI
 - **Internacionalização**: Suporte a múltiplos idiomas com Next-Intl
-- **Gerenciamento de Estado**: Controle eficiente com Zustand e React Query
-- **Formulários**: Gerenciamento robusto com React Hook Form e validação Zod
+- **Gerenciamento de Estado**: Controle eficiente com Tanstack Query
+- **Formulários**: Gerenciamento robusto com validação Zod
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Frontend**: Next.js 14, React 18, TypeScript
+- **Frontend**: Next.js, React 19, TypeScript
 - **Backend**: Supabase, PostgreSQL
 - **Estilização**: Tailwind CSS, Shadcn/UI, Framer Motion
-- **Estado**: Zustand, React Query
+- **Estado**: Tanstack Query
 - **Integração com API**: Twisted (Cliente Riot API), Axios
 - **Desenvolvimento**: ESLint, PostCSS
 

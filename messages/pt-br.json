@@ -1,4 +1,7 @@
 {
-	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hero_title": "Bem-vindo ao Clone Legends"
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "hero_title": "Bem-vindo ao Clone Legends",
+  "hero_description": "Experimente a jogabilidade do League of Legends como nunca antes.",
+  "hero_register": "Registrar-se",
+  "hero_login": "Entrar"
 }

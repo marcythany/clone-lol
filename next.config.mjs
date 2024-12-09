@@ -1,4 +1,4 @@
-import { withInlang } from '@inlang/paraglide-next/plugin.js';
+import { withInlang } from '@inlang/paraglide-next';
 import path from 'path';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);

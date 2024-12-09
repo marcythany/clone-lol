@@ -2,17 +2,19 @@
 
 import { SocialButtons } from 'components/auth/SocialButtons';
 import { Card, CardContent, CardHeader } from 'components/ui/card';
-import { useTranslations } from 'next-intl';
+import * as m from '@/paraglide/messages'; // Importando as mensagens do arquivo configurado
 
 export default function LoginPage() {
-  const t = useTranslations('Auth');
+  // Acessando as traduções diretamente das mensagens importadas
+  const loginTitle = m.Auth_login_title;
+  const loginSubtitle = m.Auth_login_subtitle;
 
   return (
     <Card className='mx-auto w-full max-w-md'>
       <CardHeader className='space-y-1'>
-        <h1 className='text-center text-2xl font-bold'>{t('login.title')}</h1>
+        <h1 className='text-center text-2xl font-bold'>{loginTitle}</h1>
         <p className='text-center text-sm text-muted-foreground'>
-          {t('login.subtitle')}
+          {loginSubtitle}
         </p>
       </CardHeader>
       <CardContent>

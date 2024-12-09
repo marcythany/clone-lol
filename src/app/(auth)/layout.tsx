@@ -1,4 +1,4 @@
-import { redirect } from 'i18n/routing';
+import { redirect } from '@/lib/i18n'; // Importando o 'redirect' de i18n configurado com Paraglide
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
@@ -10,7 +10,7 @@ export default async function AuthLayout({
   params: Promise<{ locale: string }>;
 }) {
   const cookieStore = await cookies();
-  const { locale } = await params;
+  const { locale } = await params; // Obtemos o idioma a partir dos parâmetros
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -40,13 +40,13 @@ export default async function AuthLayout({
   } = await supabase.auth.getSession();
 
   if (!session) {
-    redirect({
-      href: '/login',
-      locale,
-    });
+    // Redirecionar para a página de login com o idioma correto
+    redirect('/login', { locale }); // A mudança aqui, passando o objeto separando 'href' e 'locale'
   }
 
   return (
-    <div className='grid min-h-screen place-items-center p-4'>{children}</div>
+    <div className='grid min-h-screen place-items-center p-4'>
+      {children} {/* Exibe os filhos se o usuário estiver autenticado */}
+    </div>
   );
 }

@@ -5,5 +5,9 @@
   "hero_register": "Registrar-se",
   "hero_login": "Entrar",
   "continue_with_google": "Continuar com Google",
-  "continue_with_github": "Continuar com GitHub"
+  "continue_with_github": "Continuar com GitHub",
+  "Auth_register_title": "Registrar-se",
+  "Auth_register_subtitle": "Crie uma conta para acessar o Clone Legends.",
+  "Auth_login_title": "Entrar",
+  "Auth_login_subtitle": "Entre com sua conta para acessar o Clone Legends."
 }

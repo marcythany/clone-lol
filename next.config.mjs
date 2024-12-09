@@ -1,5 +1,5 @@
-import { withInlang } from '@inlang/paraglide-next';
 import path from 'path';
+import { paraglide } from '@inlang/paraglide-next/plugin';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -67,5 +67,10 @@ const nextConfig = {
   },
 };
 
-// Envolvendo o `nextConfig` com o plugin do Paraglide
-export default withInlang(nextConfig);
+export default paraglide({
+  paraglide: {
+    project: './project.inlang',
+    outdir: './paraglide',
+  },
+  ...nextConfig,
+});

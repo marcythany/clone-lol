@@ -92,13 +92,13 @@ export function SocialButtons() {
   };
 
   return (
-    <div className="grid gap-2">
-      <Button variant="outline" onClick={() => handleOAuthLogin('google')}>
-        <SiGoogle className="mr-2 h-4 w-4" />
+    <div className='grid gap-2'>
+      <Button variant='outline' onClick={() => handleOAuthLogin('google')}>
+        <SiGoogle className='mr-2 h-4 w-4' />
         {m.continue_with_google()}
       </Button>
-      <Button variant="outline" onClick={() => handleOAuthLogin('github')}>
-        <SiGithub className="mr-2 h-4 w-4" />
+      <Button variant='outline' onClick={() => handleOAuthLogin('github')}>
+        <SiGithub className='mr-2 h-4 w-4' />
         {m.continue_with_github()}
       </Button>
     </div>

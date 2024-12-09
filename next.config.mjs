@@ -1,6 +1,8 @@
 import createNextIntlPlugin from 'next-intl/plugin';
 import path from 'path';
 
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
@@ -50,16 +52,17 @@ const nextConfig = {
     // Adiciona aliases
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': path.join(__dirname, './src'),
-      '@/components': path.join(__dirname, './src/components'),
-      '@/ui': path.join(__dirname, './src/components/ui'),
-      '@/lib': path.join(__dirname, './src/lib'),
-      '@/utils': path.join(__dirname, './src/utils'),
-      '@/types': path.join(__dirname, './src/types'),
-      '@/hooks': path.join(__dirname, './src/hooks'),
-      '@/i18n': path.join(__dirname, './src/i18n'),
-      '@/public': path.join(__dirname, './public'),
-      '@/messages': path.join(__dirname, './messages'),
+      '@': path.resolve(__dirname, './src'),
+      '~': path.resolve(__dirname, './'),
+      '~/components': path.resolve(__dirname, './components'),
+      '~/ui': path.resolve(__dirname, './components/ui'),
+      '~/lib': path.resolve(__dirname, './lib'),
+      '~/utils': path.resolve(__dirname, './lib/utils'),
+      '~/types': path.resolve(__dirname, './types'),
+      '~/hooks': path.resolve(__dirname, './hooks'),
+      '~/i18n': path.resolve(__dirname, './i18n'),
+      '~/public': path.resolve(__dirname, './public'),
+      '~/messages': path.resolve(__dirname, './messages'),
     };
 
     return config;
@@ -71,19 +74,18 @@ const nextConfig = {
         headers: [
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
           { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE,OPTIONS' },
-          { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version' },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET,POST,PUT,DELETE,OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value:
+              'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+          },
         ],
       },
     ];
-  },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    });
-
-    return config;
   },
 };
 

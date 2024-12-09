@@ -1,137 +1,50 @@
-"use client"
+import { redirect } from 'i18n/routing';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Home, Gamepad2, User, Settings, LogOut } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-const sidebarItems = [
-  {
-    title: "Início",
-    href: "/",
-    icon: Home,
-  },
-  {
-    title: "Jogar",
-    href: "/play",
-    icon: Gamepad2,
-  },
-  {
-    title: "Perfil",
-    href: "/profile",
-    icon: User,
-  },
-]
-
-export default function MainLayout({
+export default async function MainLayout({
   children,
+  params,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
-  const pathname = usePathname()
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const cookieStore = await cookies();
+  const { locale } = await params;
 
-  return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          "w-64 border-r bg-card transition-all duration-300",
-          !isSidebarOpen && "w-20"
-        )}
-      >
-        <div className="flex h-full flex-col">
-          {/* Logo */}
-          <div className="flex h-14 items-center border-b px-4">
-            <Link href="/" className="flex items-center gap-2">
-              <img
-                src="/logo.svg"
-                alt="Logo"
-                className="h-8 w-8"
-              />
-              {isSidebarOpen && (
-                <span className="font-bold">Clone Legends</span>
-              )}
-            </Link>
-          </div>
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () =>
+          cookieStore.getAll().map((cookie) => ({
+            name: cookie.name,
+            value: cookie.value,
+          })),
+        setAll: (cookies) => {
+          cookies.map((cookie) => {
+            cookieStore.set(cookie.name, cookie.value, {
+              ...cookie.options,
+              sameSite: 'lax',
+              secure: process.env.NODE_ENV === 'production',
+            });
+          });
+        },
+      },
+    }
+  );
 
-          {/* Navigation */}
-          <nav className="flex-1 space-y-1 p-2">
-            {sidebarItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent",
-                    pathname === item.href
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {isSidebarOpen && <span>{item.title}</span>}
-                </Link>
-              )
-            })}
-          </nav>
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-          {/* User */}
-          <div className="border-t p-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 px-2"
-                >
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src="/placeholder-avatar.jpg" />
-                    <AvatarFallback>UN</AvatarFallback>
-                  </Avatar>
-                  {isSidebarOpen && (
-                    <span className="text-sm">Username</span>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="w-56"
-              >
-                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Configurações</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sair</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </aside>
+  if (!session) {
+    redirect({
+      href: '/login',
+      locale,
+    });
+  }
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="h-full bg-gradient-to-br from-background to-background/80">
-          {children}
-        </div>
-      </main>
-    </div>
-  )
+  return <div className='min-h-screen'>{children}</div>;
 }

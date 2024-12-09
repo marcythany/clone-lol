@@ -1,40 +1,7 @@
 {
-  "Index": {
-    "hero": {
-      "title": "Bem-vindo ao Clone Legends",
-      "description": "Uma experiência moderna do cliente do League of Legends, construída com as mais recentes tecnologias web.",
-      "cta": {
-        "register": "Criar Conta",
-        "login": "Entrar"
-      }
-    },
-    "features": {
-      "ranked": {
-        "title": "Sistema Ranqueado",
-        "description": "Compita em partidas classificatórias e suba no ranking."
-      },
-      "social": {
-        "title": "Recursos Sociais",
-        "description": "Conecte-se com amigos e forme times para jogar juntos."
-      },
-      "rewards": {
-        "title": "Recompensas",
-        "description": "Ganhe recompensas exclusivas por suas conquistas."
-      }
-    },
-    "footer": {
-      "copyright": "© 2024 Clone Legends. Todos os direitos reservados.",
-      "links": {
-        "terms": "Termos de Uso",
-        "privacy": "Política de Privacidade"
-      }
-    }
-  },
-  "LocaleSwitcher": {
-    "label": "Mudar idioma",
-    "locale": {
-      "pt-BR": "Português",
-      "en": "English"
-    }
-  }
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "hero_title": "Bem-vindo ao Clone Legends",
+  "hero_description": "Explore a experiência de jogo do League of Legends como nunca antes.",
+  "hero_register": "Registrar-se",
+  "hero_login": "Entrar"
 }

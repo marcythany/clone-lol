@@ -2,7 +2,7 @@ import { createBrowserClient } from '@supabase/ssr';
 import { Button } from 'components/ui/button';
 import { SiGithub, SiGoogle } from '@icons-pack/react-simple-icons';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import * as m from '@/paraglide/messages.js'; // Importando as mensagens do Paraglide
 
 export function SocialButtons() {
   const router = useRouter();
@@ -10,8 +10,6 @@ export function SocialButtons() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
-
-  const t = useTranslations('Auth');
 
   const handleOAuthLogin = async (provider: 'github' | 'google') => {
     try {
@@ -94,14 +92,14 @@ export function SocialButtons() {
   };
 
   return (
-    <div className='grid gap-2'>
-      <Button variant='outline' onClick={() => handleOAuthLogin('google')}>
-        <SiGoogle className='mr-2 h-4 w-4' />
-        {t('continue_with_google')}
+    <div className="grid gap-2">
+      <Button variant="outline" onClick={() => handleOAuthLogin('google')}>
+        <SiGoogle className="mr-2 h-4 w-4" />
+        {m.continue_with_google()}
       </Button>
-      <Button variant='outline' onClick={() => handleOAuthLogin('github')}>
-        <SiGithub className='mr-2 h-4 w-4' />
-        {t('continue_with_github')}
+      <Button variant="outline" onClick={() => handleOAuthLogin('github')}>
+        <SiGithub className="mr-2 h-4 w-4" />
+        {m.continue_with_github()}
       </Button>
     </div>
   );

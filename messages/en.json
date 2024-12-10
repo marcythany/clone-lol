@@ -1,13 +1,3 @@
 {
-  "$schema": "https://inlang.com/schema/inlang-message-format",
-  "hero_title": "Welcome to Clone Legends",
-  "hero_description": "Experience the League of Legends gameplay like never before.",
-  "hero_register": "Register",
-  "hero_login": "Log In",
-  "continue_with_google": "Continue with Google",
-  "continue_with_github": "Continue with GitHub",
-  "Auth_register_title ": "Register",
-  "Auth_register_subtitle": "Create an account to access Clone Legends.",
-  "Auth_login_title": "Log In",
-  "Auth_login_subtitle": "Log in with your account to access Clone Legends."
+    "$schema": "https://inlang.com/schema/inlang-message-format"
 }

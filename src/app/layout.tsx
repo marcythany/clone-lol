@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { LanguageProvider } from "@inlang/paraglide-next";
-import { languageTag } from "../../paraglide/runtime";
+import { languageTag } from "@/paraglide/runtime";
 import { ThemeProvider } from "@/components/theme-provider";
-import { TailwindIndicator } from "@/components/tailwind-indicator";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +27,6 @@ export default function RootLayout({
 						disableTransitionOnChange
 					>
 						{children}
-						<TailwindIndicator />
 					</ThemeProvider>
 				</LanguageProvider>
 			</body>

@@ -1,3 +1,7 @@
 {
-    "$schema": "https://inlang.com/schema/inlang-message-format"
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"homePageTitle": "League of Legends Client Clone",
+	"homePageDescription": "Explore the world of League of Legends with our custom client application.",
+	"loginButton": "Log In",
+	"registerButton": "Register"
 }

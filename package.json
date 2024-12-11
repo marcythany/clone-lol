@@ -6,8 +6,7 @@
 		"dev": "next dev",
 		"build": "paraglide-js compile --project ./project.inlang --outdir ./src\\paraglide && next build",
 		"start": "next start",
-		"lint": "next lint",
-		"postinstall": "paraglide-js compile --project ./project.inlang --outdir ./src\\paraglide"
+		"lint": "next lint"
 	},
 	"dependencies": {
 		"@inlang/paraglide-next": "0.7.4",
